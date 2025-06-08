@@ -67,7 +67,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("가장 마지막으로 저장된 상품의 번호를 가져온다.")
-    void findLatestProduct() {
+    void findLatestProductNumber() {
         // given
         String targetProductNumber = "003";
 
@@ -78,10 +78,20 @@ class ProductRepositoryTest {
         productRepository.saveAll(List.of(product1, product2, product3));
 
         // when
-        String latestProductNumber = productRepository.findLatestProduct();
+        String latestProductNumber = productRepository.findLatestProductNumber();
 
         // then
         assertThat(latestProductNumber).isEqualTo(targetProductNumber);
+    }
+
+    @Test
+    @DisplayName("가장 마지막으로 저장된 상품의 번호를 가져온다.")
+    void findLatestProductNumberWhenProductIsEmpty() {
+        // when
+        String latestProductNumber = productRepository.findLatestProductNumber();
+
+        // then
+        assertThat(latestProductNumber).isNull();
     }
 
     private Product createProduct(String productNumber, ProductType type, ProductSellingStatus sellingStatus, String name, int price) {
