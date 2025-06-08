@@ -54,4 +54,105 @@ class ProductControllerTest {
             .andDo(print())
             .andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("신규 상품을 등록할 때 상품 타입은 필수값이다.")
+    void createProductWithoutType() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+            .sellingStatus(ProductSellingStatus.SELLING)
+            .name("아메리카노")
+            .price(4000)
+            .build();
+
+        // when // then
+        // body 에 값을 넣어서 직렬화와 역직렬화가 발생
+        mockMvc.perform(
+                post("/api/v1/products/new")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value("상품 타입은 필수입니다."))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    @DisplayName("신규 상품을 등록할 때 상품 판매 상태는 필수값이다.")
+    void createProductWithoutSellingStatus() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+            .type(ProductType.HANDMADE)
+            .name("아메리카노")
+            .price(4000)
+            .build();
+
+        // when // then
+        // body 에 값을 넣어서 직렬화와 역직렬화가 발생
+        mockMvc.perform(
+                post("/api/v1/products/new")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value("상품 판매 상태는 필수입니다."))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    @DisplayName("신규 상품을 등록할 때 상품 이름은 필수값이다.")
+    void createProductWithoutName() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+            .type(ProductType.HANDMADE)
+            .sellingStatus(ProductSellingStatus.SELLING)
+            .price(4000)
+            .build();
+
+        // when // then
+        // body 에 값을 넣어서 직렬화와 역직렬화가 발생
+        mockMvc.perform(
+                post("/api/v1/products/new")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value("상품 이름은 필수입니다."))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    @DisplayName("신규 상품을 등록할 때 상품 가격은 양수이다.")
+    void createProductWithZeroPrice() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+            .type(ProductType.HANDMADE)
+            .sellingStatus(ProductSellingStatus.SELLING)
+            .name("아메리카노")
+            .price(0)
+            .build();
+
+        // when // then
+        // body 에 값을 넣어서 직렬화와 역직렬화가 발생
+        mockMvc.perform(
+                post("/api/v1/products/new")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+            .andExpect(jsonPath("$.message").value("상품 가격은 양수여야 합니다."))
+            .andExpect(jsonPath("$.data").isEmpty());
+    }
 }
