@@ -56,6 +56,14 @@ class ProductServiceTest {
         assertThat(productResponse)
                 .extracting("productNumber", "type", "sellingStatus", "name", "price")
                 .contains("002", HANDMADE, SELLING, "카푸치노", 5000);
+
+        List<Product> products = productRepository.findAll();
+        assertThat(products).hasSize(2)
+                .extracting("productNumber", "type", "sellingStatus", "name", "price")
+                .containsExactlyInAnyOrder(
+                        tuple("001", HANDMADE, SELLING, "아메리카노", 4000),
+                        tuple("002", HANDMADE, SELLING, "카푸치노", 5000)
+                );
     }
 
     @Test
@@ -76,6 +84,13 @@ class ProductServiceTest {
         assertThat(productResponse)
                 .extracting("productNumber", "type", "sellingStatus", "name", "price")
                 .contains("001", HANDMADE, SELLING, "카푸치노", 5000);
+
+        List<Product> products = productRepository.findAll();
+        assertThat(products).hasSize(1)
+                .extracting("productNumber", "type", "sellingStatus", "name", "price")
+                .containsExactlyInAnyOrder(
+                        tuple("001", HANDMADE, SELLING, "카푸치노", 5000)
+                );
     }
 
     private Product createProduct(String productNumber, ProductType type, ProductSellingStatus sellingStatus, String name, int price) {
